@@ -1,15 +1,15 @@
 {
-    "name": "mcs-terraform",
+    "name": "terraform-playground",
     "build": {
         "dockerfile": "./Dockerfile",
         "args": {
-            "-t": "local/mcs-terraform-container"
+            "-t": "local/terraform-playground"
         },
         "context": "."
     },
     "runArgs": [
-        "--name=dev-mcs-terraform",
-        "--hostname=msc-terraform"
+        "--name=dev-terraform",
+        "--hostname=terraform"
     ],
     "initializeCommand": "bash ./.devcontainer/scripts/initialize-command.sh",
     // "remoteEnv": {
@@ -56,11 +56,11 @@
             "type": "volume"
         },
         // OPTIONAL: Mount your local docker socket into the devcontainer for using proivider 'docker'
-        {
-            "source": "/var/run/docker.sock",
-            "target": "/var/run/docker.sock",
-            "type": "bind"
-        }
+        // {
+        //     "source": "/var/run/docker.sock",
+        //     "target": "/var/run/docker.sock",
+        //     "type": "bind"
+        // }
         // OPTIONAL: Mount your local workspace directory into the devcontainer
         // {
         // 	"source": "${localEnv:HOME}${localEnv:USERPROFILE}/workspace",
