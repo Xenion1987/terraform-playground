@@ -1,0 +1,72 @@
+{
+    "name": "mcs-terraform",
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "args": {
+            "-t": "local/mcs-terraform-container"
+        },
+        "context": "."
+    },
+    "runArgs": [
+        "--name=dev-mcs-terraform",
+        "--hostname=msc-terraform"
+    ],
+    "initializeCommand": "bash ./.devcontainer/scripts/initialize-command.sh",
+    // "remoteEnv": {
+    //     "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+    // },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            // "installZsh": "true",
+            // "configureZshAsDefaultShell": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "true"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "telemetry.telemetryLevel": "off",
+                "files.eol": "\n",
+                "files.insertFinalNewline": true,
+                "files.autoSave": "off",
+                "editor.formatOnSave": true,
+                "git.autorefresh": true,
+                "git.autofetch": true,
+                "git.autofetchPeriod": 90,
+                "git.pullTags": false,
+                "git.confirmSync": false
+            },
+            "extensions": [
+                "sleistner.vscode-fileutils",
+                "esbenp.prettier-vscode",
+                "yzhang.markdown-all-in-one",
+                "HashiCorp.terraform"
+            ]
+        }
+    },
+    "remoteUser": "vscode",
+    "onCreateCommand": "bash ./.devcontainer/scripts/on-create-command.sh",
+    "mounts": [
+        {
+            "source": "devcontainer-history",
+            "target": "/home/vscode/.history_export",
+            "type": "volume"
+        },
+        // OPTIONAL: Mount your local docker socket into the devcontainer for using proivider 'docker'
+        {
+            "source": "/var/run/docker.sock",
+            "target": "/var/run/docker.sock",
+            "type": "bind"
+        }
+        // OPTIONAL: Mount your local workspace directory into the devcontainer
+        // {
+        // 	"source": "${localEnv:HOME}${localEnv:USERPROFILE}/workspace",
+        // 	"target": "/home/vscode/workspace",
+        // 	"type": "bind"
+        // }
+    ],
+    "postCreateCommand": "bash ./.devcontainer/scripts/post-create-command.sh"
+}
