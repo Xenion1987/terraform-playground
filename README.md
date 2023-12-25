@@ -1,20 +1,22 @@
 # Terraform Playground
 
-- [Requirements](#requirements)
-  - [Docker](#docker)
-  - [Microsoft Visual Studio Code](#microsoft-visual-studio-code)
-  - [vscode extensions](#vscode-extensions)
-- [Start contributing](#start-contributing)
-- [Getting started with **terraform**](#getting-started-with-terraform)
-- [Example: Create a docker container `netdata`](#example-create-a-docker-container-netdata)
-  - [Setup your **terraform** environment](#setup-your-terraform-environment)
-  - [Let **terraform** create a docker `netdata` container](#let-terraform-create-a-docker-netdata-container)
-    - [Check what **terraform** ***would*** do (`terraform plan`)](#check-what-terraform-would-do-terraform-plan)
-    - [Create **terraform** resources (`terraform apply`)](#create-terraform-resources-terraform-apply)
-    - [Check created resources](#check-created-resources)
-    - [Visit `netdata` metrics app](#visit-netdata-metrics-app)
-  - [Set custom variables](#set-custom-variables)
-- [Modules](#modules)
+- [Terraform Playground](#terraform-playground)
+  - [Requirements](#requirements)
+    - [Docker](#docker)
+    - [Microsoft Visual Studio Code](#microsoft-visual-studio-code)
+    - [vscode extensions](#vscode-extensions)
+  - [Start contributing](#start-contributing)
+  - [Getting started with **terraform**](#getting-started-with-terraform)
+  - [Example: Create a docker container `netdata`](#example-create-a-docker-container-netdata)
+    - [Enable **docker-in-docker**](#enable-docker-in-docker)
+    - [Setup your **terraform** environment](#setup-your-terraform-environment)
+    - [Let **terraform** create a docker `netdata` container](#let-terraform-create-a-docker-netdata-container)
+      - [Check what **terraform** ***would*** do (`terraform plan`)](#check-what-terraform-would-do-terraform-plan)
+      - [Create **terraform** resources (`terraform apply`)](#create-terraform-resources-terraform-apply)
+      - [Check created resources](#check-created-resources)
+      - [Visit `netdata` metrics app](#visit-netdata-metrics-app)
+    - [Set custom variables](#set-custom-variables)
+  - [Modules](#modules)
 
 This repository can be used as a template for developing with `terraform`. This repository sets up a complete terraform development environment including:
 
@@ -61,6 +63,10 @@ Most of the cloud providers cost money for each created or running instance. Som
 As a starting point, you could also use the [**docker** provider](https://developer.hashicorp.com/terraform/tutorials/docker-get-started) to getting started with **terraform** locally and for free.
 
 ## Example: Create a docker container `netdata`
+
+### Enable **docker-in-docker**
+
+**docker-in-docker** is required to get this example to work. Enable it by commenting in the devcontainer feature **docker-in-docker** in the file [devcontainer.json](./.devcontainer/devcontainer.json).
 
 ### Setup your **terraform** environment
 
@@ -254,14 +260,14 @@ As defined in [docker_container.tf](./modules/docker_netdata/docker_container.tf
 
 ### Set custom variables
 
-Feel free to add your own variables like `container_netdata_hostname` or your own `netdata_claim_*` variables. You only need to modify the commented out variables in [main.tf](./main.tf).
+Feel free to add your own variables like `container_netdata_hostname` or your own `netdata_claim_*` variables. Create a `main_override.tf` file and fill out the variables you need.
 
 <!-- BEGIN_TERRAFORM_DOCS -->
-
 
 ## Modules
 
 | Name                                                  | Source                   | Version |
 | ----------------------------------------------------- | ------------------------ | ------- |
 | [docker\_netdata](./modules/docker_netdata/README.md) | ./modules/docker_netdata | n/a     |
+
 <!-- END_TERRAFORM_DOCS -->
