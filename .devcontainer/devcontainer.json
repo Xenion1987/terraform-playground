@@ -16,6 +16,10 @@
     //     "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
     // },
     "features": {
+        // "ghcr.io/devcontainers/features/docker-in-docker": {
+        //     "dockerDashComposeVersion": "v2",
+        //      "installDockerBuildx": false
+        // },
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": "false",
             "configureZshAsDefaultShell": "false",
@@ -24,7 +28,6 @@
             "userGid": "1000",
             "upgradePackages": "true"
         }
-        //"ghcr.io/devcontainers/features/docker-in-docker": {}
     },
     "customizations": {
         "vscode": {
