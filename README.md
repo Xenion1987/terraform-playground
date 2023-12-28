@@ -66,8 +66,7 @@ As a starting point, you could also use the [**docker** provider](https://develo
 
 ### Enable **docker-in-docker**
 
-**docker-in-docker** is required to get this example to work. Enable it by commenting in the last two commands in the [Dockerfile](./.devcontainer/Dockerfile) (temporary solution while [#577](https://github.com/devcontainers/features/issues/577) has not been fixed).
-~~devcontainer feature **docker-in-docker** in the file [devcontainer.json](./.devcontainer/devcontainer.json).~~
+**docker-in-docker** is required to get this example to work. Enable it by commenting in the devcontainer feature **docker-in-docker** in the file [devcontainer.json](./.devcontainer/devcontainer.json).
 
 ### Setup your **terraform** environment
 
