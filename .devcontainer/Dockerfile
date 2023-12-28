@@ -21,7 +21,7 @@ RUN curl \
     --url https://raw.githubusercontent.com/devcontainers/features/main/src/terraform/install.sh \
     && bash /tmp/install_terraform.sh ${TERRAFORM_VERSION} ${TFLINT_VERSION} ${TERRAGRUNT_VERSION} \
     && TF_DOCS_V=$(curl -s "https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest" | jq -r '.tag_name') \
-    && case $(uname -m) in x86_64) ARCH=amd64;; *) ARCH=$(uname -m);; esac \
+    && case $(uname -m) in x86_64) ARCH=amd64;; aarch64) ARCH=arm64;; *) ARCH=$(uname -m);; esac \
     && curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/${TF_DOCS_V}/terraform-docs-${TF_DOCS_V}-$(uname)-${ARCH}.tar.gz \
     && tar -xzf ./terraform-docs.tar.gz \
     && chmod +x terraform-docs \
