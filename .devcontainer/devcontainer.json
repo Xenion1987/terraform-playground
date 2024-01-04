@@ -8,25 +8,30 @@
         "context": "."
     },
     "runArgs": [
-        "--name=dev-terraform",
+        "--name=terraform-playground",
         "--hostname=terraform"
     ],
     "initializeCommand": "bash ./.devcontainer/scripts/initialize-command.sh",
+    "onCreateCommand": "bash ./.devcontainer/scripts/on-create-command.sh",
+    "postCreateCommand": "bash ./.devcontainer/scripts/post-create-command.sh",
+    "remoteUser": "vscode",
     // "remoteEnv": {
     //     "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
     // },
     "features": {
-        // "ghcr.io/devcontainers/features/docker-in-docker": {
-        //     "dockerDashComposeVersion": "v2",
-        //      "installDockerBuildx": false
-        // },
+        // https://github.com/devcontainers/features/tree/main/src/common-utils
         "ghcr.io/devcontainers/features/common-utils:2": {
+            // "upgradePackages": "true",
             "installZsh": "false",
             "configureZshAsDefaultShell": "false",
-            "username": "vscode",
-            "userUid": "1000",
-            "userGid": "1000",
-            "upgradePackages": "true"
+            // "userUid": "1000",
+            // "userGid": "1000",
+            "username": "vscode"
+        },
+        // https://github.com/devcontainers/features/tree/main/src/docker-outside-of-docker
+        "ghcr.io/devcontainers/features/docker-outside-of-docker": {
+            // "dockerDashComposeVersion": "v2",
+            "installDockerBuildx": false
         }
     },
     "customizations": {
@@ -51,14 +56,23 @@
             ]
         }
     },
-    "remoteUser": "vscode",
-    "onCreateCommand": "bash ./.devcontainer/scripts/on-create-command.sh",
     "mounts": [
+        // OPTIONAL: Mount your local docker socket into the devcontainer for using proivider 'docker'
+        // {
+        //     "source": "/var/run/docker.sock",
+        //     "target": "/var/run/docker.sock",
+        //     "type": "bind"
+        // },
+        // OPTIONAL: Mount your local workspace directory into the devcontainer
+        // {
+        // 	"source": "${localEnv:HOME}${localEnv:USERPROFILE}/workspace",
+        // 	"target": "/home/vscode/workspace",
+        // 	"type": "bind"
+        // },
         {
             "source": "devcontainer-history",
             "target": "/home/vscode/.history_export",
             "type": "volume"
         }
-    ],
-    "postCreateCommand": "bash ./.devcontainer/scripts/post-create-command.sh"
+    ]
 }

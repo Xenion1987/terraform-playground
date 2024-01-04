@@ -1,31 +1,50 @@
-ARG TERRAFORM_VERSION=1.6
+FROM python:slim-bookworm
+
+# Set Variables
+ARG LINUX_USER=vscode
+ARG TF_VERSION=1.6.6
+ARG TFDOCS_VERSION=latest
 ARG TFLINT_VERSION=latest
-ARG TERRAGRUNT_VERSION=latest
+ARG TFTRIVY_VERSION=latest
 
-FROM debian:12-slim
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt update \
-    && apt -y purge imagemagick imagemagick-6-common \
-    && apt -y install \
-    dialog apt-utils sudo man-db \
-    curl wget gpg lsb-release \
-    python3-minimal python3-pip git jq \
-    && apt -y dist-upgrade \
-    && apt -y autoremove \
-    && rm -rf /var/lib/apt/lists/*
+# Copy setup script
+COPY ./scripts/setup-docker-container.sh /tmp
 
-# Install Terraform
-RUN curl \
-    --silent \
-    --output /tmp/install_terraform.sh \
-    --url https://raw.githubusercontent.com/devcontainers/features/main/src/terraform/install.sh \
-    && bash /tmp/install_terraform.sh ${TERRAFORM_VERSION} ${TFLINT_VERSION} ${TERRAGRUNT_VERSION} \
-    && TF_DOCS_V=$(curl -s "https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest" | jq -r '.tag_name') \
-    && case $(uname -m) in x86_64) ARCH=amd64;; aarch64) ARCH=arm64;; *) ARCH=$(uname -m);; esac \
-    && curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/${TF_DOCS_V}/terraform-docs-${TF_DOCS_V}-$(uname)-${ARCH}.tar.gz \
-    && tar -xzf ./terraform-docs.tar.gz \
-    && chmod +x terraform-docs \
-    && mv terraform-docs /usr/local/bin/
+# Install all applications
+RUN /tmp/setup-docker-container.sh install all ${TF_VERSION} ${TFDOCS_VERSION} ${TFLINT_VERSION} ${TFTRIVY_VERSION}
 
-# Install pre-commit
-RUN pip install --upgrade --break-system-packages pre-commit
+# # Install OS requirements
+# RUN /tmp/setup-docker-container.sh install os-requirements
+
+# # Install pip
+# RUN /tmp/setup-docker-container.sh install pip
+
+# # Install pip requirements
+# RUN /tmp/setup-docker-container.sh install pip-requirements
+
+# # Install Terraform and Terraform tools
+# RUN /tmp/setup-docker-container.sh install terraform ${TF_VERSION} \
+#     && /tmp/setup-docker-container.sh install terraform-docs ${TFDOCS_VERSION} \
+#     && /tmp/setup-docker-container.sh install terraform-lint ${TFLINT_VERSION} \
+#     && /tmp/setup-docker-container.sh install terraform-trivy ${TFTRIVY_VERSION}
+
+# # Install Pre-Commit
+# RUN /tmp/setup-docker-container.sh install pre-commit
+
+# # Setup python-argcomplete
+# RUN /tmp/setup-docker-container.sh setup python-argcomplete
+
+# Setup default user
+RUN /tmp/setup-docker-container.sh setup user ${LINUX_USER}
+
+# Setup default user id_rsa ssh keypair
+RUN /tmp/setup-docker-container.sh setup ssh-key ${LINUX_USER}
+
+# Set default user
+USER ${LINUX_USER}
+WORKDIR /home/${LINUX_USER}
+
+# Setup oh-my-bash
+RUN /tmp/setup-docker-container.sh setup oh-my-bash
+
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "pgrep bash" ]
