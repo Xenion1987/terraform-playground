@@ -21,7 +21,7 @@ jobs:
       - name: Setup trivy
         run: .devcontainer/scripts/setup-docker-container.sh install terraform-trivy latest
       - name: Run Pre-Commit
-        uses: pre-commit/action@v3
+        uses: pre-commit/action@v3.0.0
 
   terraform-trivy:
     name: "Vulnerability scan"
