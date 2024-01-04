@@ -5,10 +5,7 @@
     - [Docker](#docker)
     - [Microsoft Visual Studio Code](#microsoft-visual-studio-code)
     - [vscode extensions](#vscode-extensions)
-  - [Start contributing](#start-contributing)
-  - [Getting started with **terraform**](#getting-started-with-terraform)
   - [Example: Create a docker container `netdata`](#example-create-a-docker-container-netdata)
-    - [Enable **docker-in-docker**](#enable-docker-in-docker)
     - [Setup your **terraform** environment](#setup-your-terraform-environment)
     - [Let **terraform** create a docker `netdata` container](#let-terraform-create-a-docker-netdata-container)
       - [Check what **terraform** ***would*** do (`terraform plan`)](#check-what-terraform-would-do-terraform-plan)
@@ -16,14 +13,18 @@
       - [Check created resources](#check-created-resources)
       - [Visit `netdata` metrics app](#visit-netdata-metrics-app)
     - [Set custom variables](#set-custom-variables)
-  - [Modules](#modules)
+  - [Requirements](#requirements-1)
+  - [Providers](#providers)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
 
 This repository can be used as a template for developing with `terraform`. This repository sets up a complete terraform development environment including:
 
 - terraform
 - terraform-docs
-- terraform-grunt
 - terraform-lint
+- terraform-trivy
 - vscode terraform plugins
 - pre-commit
 
@@ -41,36 +42,18 @@ Download and install [vscode](https://code.visualstudio.com/)
 
 In **vscode**, install extension **[ms-vscode-remote.remote-containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)**
 
-## Start contributing
-
-1. Start **docker** engine
-1. Clone this repository
-1. Open the local repository in **vscode**
-1. If you want to mount your local workspace directory into the **devcontainer**, modify [.devcontainer.json](./.devcontainer/devcontainer.json) Section `"mounts": [ "source=${localEnv:HOME}${localEnv:USERPROFILE}/workspace,target=/home/vscode/workspace,type=bind,consistency=cached"]` to fit your workspace path.
-1. In the popup at the lower right corner, click on "Reopen in Container"
-1. Initialize **terraform** via `terraform init`
-1. Start infrastructure as code
-
-## Getting started with **terraform**
-
-| Description                                              | Link                                                                |
-| -------------------------------------------------------- | ------------------------------------------------------------------- |
-| Terraform official tutorials                             | [terraform.io](https://developer.hashicorp.com/terraform/tutorials) |
-| HashiCorp Terraform Associate Certification Course (003) | [YouTube](https://www.youtube.com/watch?v=SPcwo0Gq9T8)              |
-
-Most of the cloud providers cost money for each created or running instance. Some providerso do offer free tiers (e.g. [AWS](https://aws.amazon.com/free), [MS-Azure](https://azure.microsoft.com/en-in/pricing/free-services/) or [Google Cloud](https://cloud.google.com/free)). Those may be okay for getting started with terraform, but they all require knowledge related to the provider.
-
-As a starting point, you could also use the [**docker** provider](https://developer.hashicorp.com/terraform/tutorials/docker-get-started) to getting started with **terraform** locally and for free.
 
 ## Example: Create a docker container `netdata`
 
-### Enable **docker-in-docker**
-
-**docker-in-docker** is required to get this example to work. Enable it by commenting in the devcontainer feature **docker-in-docker** in the file [devcontainer.json](./.devcontainer/devcontainer.json#L19-L22).
-
 ### Setup your **terraform** environment
 
-Please follow the steps described above: [Start contributing](#start-contributing)  
+1. Start **docker** engine
+2. Clone this repository
+3. Open the local repository in **vscode**
+4. If you want to mount your local workspace directory into the **devcontainer**, modify [.devcontainer.json](./.devcontainer/devcontainer.json) Section `"mounts": [ "source=${localEnv:HOME}${localEnv:USERPROFILE}/workspace,target=/home/vscode/workspace,type=bind,consistency=cached"]` to fit your workspace path.
+5. In the popup at the lower right corner, click on "Reopen in Container"
+6. Initialize **terraform** via `terraform init`
+7. Start infrastructure as code
 
 ### Let **terraform** create a docker `netdata` container
 
@@ -260,14 +243,53 @@ As defined in [docker_container.tf](./modules/docker_netdata/docker_container.tf
 
 ### Set custom variables
 
-Feel free to add your own variables like `container_netdata_hostname` or your own `netdata_claim_*` variables. Create a `main_override.tf` file and fill out the variables you need.
+Feel free to add your own variables like `container_netdata_hostname` or your own `netdata_claim_*` variables by copying the `main.tf` to `main_override.tf` and edit the commented out variables.  
+Or create a file `terraform.tfvars` and add the variables and your values to that file.
 
 <!-- BEGIN_TERRAFORM_DOCS -->
+## Requirements
 
-## Modules
+| Name | Version |
+|------|---------|
+| <a name="requirement_docker"></a> [docker](#requirement\_docker) | ~> 3.0.0 |
 
-| Name                                                  | Source                   | Version |
-| ----------------------------------------------------- | ------------------------ | ------- |
-| [docker\_netdata](./modules/docker_netdata/README.md) | ./modules/docker_netdata | n/a     |
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_docker"></a> [docker](#provider\_docker) | ~> 3.0.0 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [docker_container.netdata](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
+| [docker_image.netdata](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
+| [docker_network.netdata](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/network) | resource |
+| [docker_volume.netdatacache](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
+| [docker_volume.netdataconfig](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
+| [docker_volume.netdatalib](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_container_netdata_hostname"></a> [container\_netdata\_hostname](#input\_container\_netdata\_hostname) | Hostname to be shown on Netdata Metrics site | `string` | `"created-by-terraform"` | no |
+| <a name="input_netdata_claim_rooms"></a> [netdata\_claim\_rooms](#input\_netdata\_claim\_rooms) | Room-ID to claim the host to | `string` | `""` | no |
+| <a name="input_netdata_claim_token"></a> [netdata\_claim\_token](#input\_netdata\_claim\_token) | Netdata claim token | `string` | `""` | no |
+| <a name="input_netdata_claim_url"></a> [netdata\_claim\_url](#input\_netdata\_claim\_url) | Netdata URL to claim the host to | `string` | `"https://app.netdata.cloud"` | no |
+| <a name="input_volume_docker_socket_container"></a> [volume\_docker\_socket\_container](#input\_volume\_docker\_socket\_container) | Container Docker socket path | `string` | `"/var/run/docker.sock"` | no |
+| <a name="input_volume_docker_socket_local"></a> [volume\_docker\_socket\_local](#input\_volume\_docker\_socket\_local) | Host Docker socket path | `string` | `"/var/run/docker.sock"` | no |
+| <a name="input_volume_netdatacache_id"></a> [volume\_netdatacache\_id](#input\_volume\_netdatacache\_id) | Docker volume name or id to create/attach to store netdata cache data | `string` | `"netdatacache"` | no |
+| <a name="input_volume_netdataconfig_id"></a> [volume\_netdataconfig\_id](#input\_volume\_netdataconfig\_id) | Docker volume name or id to create/attach to store netdata config data | `string` | `"netdataconfig"` | no |
+| <a name="input_volume_netdatalib_id"></a> [volume\_netdatalib\_id](#input\_volume\_netdatalib\_id) | Docker volume name or id to create/attach to store netdata lib data | `string` | `"netdatalib"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_network_id_netdata"></a> [network\_id\_netdata](#output\_network\_id\_netdata) | Long ID for created docker network 'netdata' |
+| <a name="output_volume_netdatacache_id"></a> [volume\_netdatacache\_id](#output\_volume\_netdatacache\_id) | ID for created docker volume 'netdatacache' |
+| <a name="output_volume_netdataconfig_id"></a> [volume\_netdataconfig\_id](#output\_volume\_netdataconfig\_id) | ID for created docker volume 'netdataconfig' |
+| <a name="output_volume_netdatalib_id"></a> [volume\_netdatalib\_id](#output\_volume\_netdatalib\_id) | ID for created docker volume 'netdatalib' |
 <!-- END_TERRAFORM_DOCS -->

@@ -12,7 +12,7 @@ resource "docker_container" "netdata" {
   ]
   hostname = var.container_netdata_hostname
   image    = docker_image.netdata.image_id
-  name     = "netdata"
+  name     = "netdata-by-terraform"
   ports {
     ip       = "127.0.0.1"
     internal = 19999
@@ -21,16 +21,19 @@ resource "docker_container" "netdata" {
   restart       = "unless-stopped"
   security_opts = ["apparmor:unconfined"]
   volumes {
-    volume_name    = "netdataconfig"
+    # volume_name    = "netdatacache"
+    volume_name    = docker_volume.netdatacache.id
+    container_path = "/var/cache/netdata"
+  }
+  volumes {
+    # volume_name    = "netdataconfig"
+    volume_name    = docker_volume.netdataconfig.id
     container_path = "/etc/netdata"
   }
   volumes {
-    volume_name    = "netdatalib"
+    # volume_name    = "netdatalib"
+    volume_name    = docker_volume.netdatalib.id
     container_path = "/var/lib/netdata"
-  }
-  volumes {
-    volume_name    = "netdatacache"
-    container_path = "/var/cache/netdata"
   }
   volumes {
     host_path      = "/etc/passwd"
@@ -61,5 +64,8 @@ resource "docker_container" "netdata" {
     host_path      = var.volume_docker_socket_local
     container_path = var.volume_docker_socket_container
     read_only      = true
+  }
+  networks_advanced {
+    name = docker_network.netdata.id
   }
 }
