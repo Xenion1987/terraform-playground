@@ -1,0 +1,44 @@
+---
+# Trivy can be customized by tweaking this file.
+# The config path can be overridden by the --config flag.
+# Config options are documented here:
+# https://aquasecurity.github.io/trivy/dev/docs/references/configuration/config-file/
+
+# Same as '--ignorefile'
+ignorefile: .trivyignore
+
+# Same as '--severity'
+severity:
+  # Default is all severities
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+
+scan:
+  # Same as '--scanners'
+  scanners:
+    # Default depends on subcommand
+    - vuln
+    - misconfig
+    - secret
+  # Same as '--skip-dirs'
+  skip-dirs:
+    # Default is empty
+    - .devcontainer
+
+misconfiguration:
+  scanners:
+    # - azure
+    # - cloudformation
+    # - docker
+    # - helm
+    # - kubernetes
+    - terraform
+
+  # terraform:
+  #   # terraform tfvars overrrides
+  #   vars:
+  #     - dev-terraform.tfvars
+  #     - common-terraform.tfvars
