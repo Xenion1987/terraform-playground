@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# OPTIONAL: Setup oh-my-bash
+if .devcontainer/scripts/setup-docker-container.sh setup oh-my-bash; then
+  .devcontainer/scripts/on-create-command.sh
+fi
+
 # Install terraform autocomplete
 terraform -install-autocomplete
 
@@ -17,7 +22,7 @@ fi
 
 # Re-source profile
 # shellcheck source=/dev/null
-source ~/.profile
+source ~/".${SHELL##*/}rc"
 if ! git status &>/dev/null; then
   git config --global --add safe.directory "${PWD}"
 fi
