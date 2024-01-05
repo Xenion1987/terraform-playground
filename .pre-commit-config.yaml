@@ -5,6 +5,19 @@ repos:
       - id: trailing-whitespace
         name: Cleanup trailing whitespaces
         args: [--markdown-linebreak-ext=md]
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        name: Check '*.sh' files
+        files: ^(.*)\.sh$
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.7.0-4
+    hooks:
+      - id: shfmt
+        name: Format '*.sh' files
+        files: ^(.*)\.sh$
+        args: [-i, "2", -w]
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.86.0"
     hooks:
@@ -13,11 +26,3 @@ repos:
       - id: terraform_docs
         args:
           - --args=--config=.terraform-docs.yml
-  # - repo: https://github.com/terraform-docs/terraform-docs
-  #   rev: "v0.17.0"
-  #   hooks:
-  #     - id: terraform-docs-go
-  #       args:
-  #         - "-c"
-  #         - ".terraform-docs.yml"
-  #         - "."
