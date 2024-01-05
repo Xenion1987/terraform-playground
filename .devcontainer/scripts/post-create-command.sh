@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # OPTIONAL: Setup oh-my-bash
-if .devcontainer/scripts/setup-docker-container.sh setup oh-my-bash; then
-  .devcontainer/scripts/on-create-command.sh
-fi
+# if .devcontainer/scripts/setup-docker-container.sh setup oh-my-bash; then
+#   .devcontainer/scripts/on-create-command.sh
+# fi
 
 # Install terraform autocomplete
 terraform -install-autocomplete

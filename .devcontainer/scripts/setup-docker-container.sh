@@ -197,10 +197,10 @@ function setup_omb() {
   local theme
   local user_home
   theme="${1:-powerline-multiline}"
-  user_home="$(awk -F':' '{print $6}'< <(getent passwd $(whoami)))"
+  user_home="$(awk -F':' '{print $6}' < <(getent passwd $(whoami)))"
 
-  if ! ls -1Ad "${USER_HOME}/.oh-my-bash" &>/dev/null; then
-    rm -rf "${USER_HOME}/.oh-my-bash"
+  if ! ls -1Ad "${user_home}/.oh-my-bash" &>/dev/null; then
+    rm -rf "${user_home}/.oh-my-bash"
   fi
   curl -fsSL -o /tmp/install.sh https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh
   chmod +x /tmp/install.sh
