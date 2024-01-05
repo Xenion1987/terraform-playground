@@ -10,11 +10,14 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_trivy
-  - repo: https://github.com/terraform-docs/terraform-docs
-    rev: "v0.17.0"
-    hooks:
-      - id: terraform-docs-go
+      - id: terraform_docs
         args:
-          - "-c"
-          - ".terraform-docs.yml"
-          - "."
+          - --args=--config=.terraform-docs.yml
+  # - repo: https://github.com/terraform-docs/terraform-docs
+  #   rev: "v0.17.0"
+  #   hooks:
+  #     - id: terraform-docs-go
+  #       args:
+  #         - "-c"
+  #         - ".terraform-docs.yml"
+  #         - "."
