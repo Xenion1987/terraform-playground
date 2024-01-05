@@ -14,6 +14,13 @@ function apt_install() {
     apt -y --no-install-recommends install "${@}" &&
     apt_cleanup
 }
+function get_latest_git_release() {
+  local org="${1}"
+  local repo="${2}"
+  curl --fail -sS "https://api.github.com/repos/${org}/${repo}/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/'
+}
 function get_machine_arch() {
   local machine_arch=""
   case $(uname -m) in
@@ -46,7 +53,8 @@ function install_all() {
   install_terraform "${1}"
   install_tf_docs "${2}"
   install_tf_lint "${3}"
-  install_tf_trivy "${4}"
+  install_trivy "${4}"
+  install_terragrunt "${5}"
   apt_cleanup
 }
 function install_os_requirements() {
@@ -72,9 +80,9 @@ function install_pip() {
     pip
 }
 function install_pip_requirements() {
-  if [[ $(grep -Evc '^[[:space:]]*#' ../requirements.txt) -ge 0 ]]; then
+  if [[ $(grep -Evc '^[[:space:]]*#' .devcontainer/requirements.txt) -gt 0 ]]; then
     python3 -m pip install --upgrade \
-      -r ../requirements.txt
+      -r .devcontainer/requirements.txt
   fi
 }
 function install_pre_commit() {
@@ -95,42 +103,63 @@ function install_terraform() {
     tee /etc/apt/sources.list.d/hashicorp.list
   apt_install "${tf_version}"
 }
-function install_tf_docs() {
-  local machine_arch machine_os tfdocs_version
+function install_terragrunt() {
+  local machine_arch machine_os version
+  local org=gruntwork-io
+  local repo=terragrunt
+  local binary_path=/usr/bin
+  local binary_name=terragrunt
   machine_arch=$(get_machine_arch)
   machine_os=$(uname)
   machine_os=${machine_os,,}
-  tfdocs_version="${1:-latest}"
-  if [[ ${tfdocs_version} == "latest" ]]; then
-    tfdocs_version=$(curl --fail -sS "https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest" |
-      grep '"tag_name":' |
-      sed -E 's/.*"([^"]+)".*/\1/')
+  version="${1:-latest}"
+
+  if [[ ${version} == "latest" ]]; then
+    version=$(get_latest_git_release "${org}" "${repo}")
+  fi
+  curl -sSLo "${binary_path}/${binary_name}" \
+    --url "https://github.com/${org}/${repo}/releases/download/${version}/terragrunt_${machine_os}_${machine_arch}"
+  chmod +x "${binary_path}/${binary_name}"
+}
+function install_tf_docs() {
+  local machine_arch machine_os version
+  local org=terraform-docs
+  local repo=terraform-docs
+  local binary_path=/usr/bin
+  local binary_name=terraform-docs
+
+  machine_arch=$(get_machine_arch)
+  machine_os=$(uname)
+  machine_os=${machine_os,,}
+  version="${1:-latest}"
+  if [[ ${version} == "latest" ]]; then
+    version=$(get_latest_git_release "${org}" "${repo}")
   fi
   curl -sSLo /tmp/terraform-docs.tar.gz \
-    --url "https://terraform-docs.io/dl/${tfdocs_version}/terraform-docs-${tfdocs_version}-${machine_os}-${machine_arch}.tar.gz"
+    --url "https://terraform-docs.io/dl/${version}/terraform-docs-${version}-${machine_os}-${machine_arch}.tar.gz"
   tar -xzf /tmp/terraform-docs.tar.gz -C /tmp/
-  chmod +x /tmp/terraform-docs
-  mv /tmp/terraform-docs /usr/local/bin/
-  rm -f /tmp/{README.md,LICENSE,terraform-docs.tar.gz}
+  chmod +x "/tmp/${binary_name}"
+  mv "/tmp/${binary_name}" "${binary_path}/${binary_name}"
+  rm -f /tmp/{README.md,LICENSE,*{.tar,.tgz,.gz}}
 }
 function install_tf_lint() {
   local TFLINT_VERSION
   export TFLINT_VERSION="${1:-latest}"
   curl -sSL https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 }
-function install_tf_trivy() {
-  local tftrivy_version
-  tftrivy_version="${1:-latest}"
-  if [[ ${tftrivy_version} == "latest" ]]; then
-    tftrivy_version="trivy"
+function install_trivy() {
+  local version
+  version="${1:-latest}"
+  if [[ ${version} == "latest" ]]; then
+    version="trivy"
   else
-    tftrivy_version="trivy=${tftrivy_version}-1"
+    version="trivy=${version}-1"
   fi
   curl -sSLo - https://aquasecurity.github.io/trivy-repo/deb/public.key |
     gpg --dearmor -o /usr/share/keyrings/trivy.gpg
   echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" |
     tee /etc/apt/sources.list.d/trivy.list
-  apt_install "${tftrivy_version}"
+  apt_install "${version}"
 }
 ##############################################
 # Setup functions
@@ -166,13 +195,22 @@ function setup_user() {
 }
 function setup_omb() {
   local theme
+  local user_home
   theme="${1:-powerline-multiline}"
-  bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" &&
-    sleep 1
-  sed -E -i \
-    -e '/composer/d' \
-    -e 's/OSH_THEME="(.*)"/OSH_THEME="'"${theme}"'"/' \
-    ~/.bashrc
+  user_home="$(awk -F':' '{print $6}'< <(getent passwd $(whoami)))"
+
+  if ! ls -1Ad "${USER_HOME}/.oh-my-bash" &>/dev/null; then
+    rm -rf "${USER_HOME}/.oh-my-bash"
+  fi
+  curl -fsSL -o /tmp/install.sh https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh
+  chmod +x /tmp/install.sh
+  if /tmp/install.sh --unattended; then
+    sed -E -i \
+      -e '/composer/d' \
+      -e 's/OSH_THEME="(.*)"/OSH_THEME="'"${theme}"'"/' \
+      ~/.bashrc
+    rm -f /tmp/install.sh
+  fi
 }
 function setup_ssh_key() {
   local usr
@@ -208,11 +246,12 @@ function help_install() {
   install                   - Install applications
 
  SUB-COMMANDS:
-  all
-    [TF_VERSION]
-    [TFDOCS_VERSION]
-    [TFLINT_VERSION]
-    [TFTRIVY_VERSION]       - Install all applications
+  all \\
+    [TF_VERSION] \\
+    [TFDOCS_VERSION] \\
+    [TFLINT_VERSION] \\
+    [TFTRIVY_VERSION] \\
+    [TERRAGRUNT_VERSION]    - Install all applications
   help                      - Show [COMMAND] help
   pip                       - Install pip
   pip-requirements          - Install pip packages from requirements.txt
@@ -220,7 +259,10 @@ function help_install() {
   os-requirements           - Install OS requirements
   terraform [VERSION]       - Install terraform VERSION (default: latest)
   terraform-docs [VERSION]  - Install terraform-docs VERSION (default: latest)
-  terraform-lint [VERSION]  - Install terraform-lint VERSION (default: latest)
+  terragrunt [VERSION]      - Install terragrunt VERSION (default: latest)
+  tflint [VERSION]          - Install terraform-lint VERSION (default: latest)
+  trivy [VERSION]           - Install trivy VERSION (default: latest)
+
 
 
 _ENDOFHELP
@@ -255,7 +297,7 @@ function main() {
     case $1 in
     all)
       shift
-      install_all "${1:-latest}" "${2:-latest}" "${3:-latest}" "${4:-latest}"
+      install_all "${1:-latest}" "${2:-latest}" "${3:-latest}" "${4:-latest}" "${5:-latest}"
       ;;
     pip)
       install_pip
@@ -277,11 +319,15 @@ function main() {
       shift
       install_tf_docs "${1}"
       ;;
-    terraform-lint)
+    terragrunt)
+      shift
+      install_terragrunt "${1}"
+      ;;
+    tflint)
       shift
       install_tf_lint "${1}"
       ;;
-    terraform-trivy)
+    trivy)
       shift
       install_tf_trivy "${1}"
       ;;
