@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 USER_NAME="$(whoami)"
-USER_HOME="$(awk -F':' '{print $6}'< <(getent passwd $(whoami)))"
+USER_HOME="$(awk -F':' '{print $6}' < <(getent passwd $(whoami)))"
 USER_HIST_PATH="${USER_HOME}/.history_export"
 USER_HIST_FILE="${USER_HIST_PATH}/.history"
 USER_RC_FILE="${USER_HOME}/.${SHELL##*/}rc"
