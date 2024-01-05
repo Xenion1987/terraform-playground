@@ -197,7 +197,7 @@ function setup_omb() {
   local theme
   local user_home
   theme="${1:-powerline-multiline}"
-  user_home="$(awk -F':' '{print $6}' < <(getent passwd $(whoami)))"
+  user_home="$(awk -F':' '{print $6}' < <(getent passwd "$(whoami)"))"
 
   if ! ls -1Ad "${user_home}/.oh-my-bash" &>/dev/null; then
     rm -rf "${user_home}/.oh-my-bash"
