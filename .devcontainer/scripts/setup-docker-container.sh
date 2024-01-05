@@ -329,7 +329,7 @@ function main() {
       ;;
     trivy)
       shift
-      install_tf_trivy "${1}"
+      install_trivy "${1}"
       ;;
     *)
       echo "Missing or wrong SUB-COMMAND - Exit"
