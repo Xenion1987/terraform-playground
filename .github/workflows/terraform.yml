@@ -19,7 +19,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
       - name: Setup trivy
-        run: sudo .devcontainer/scripts/setup-docker-container.sh install terraform-trivy latest
+        run: sudo .devcontainer/scripts/setup-docker-container.sh install trivy latest
       - name: Run Pre-Commit
         uses: pre-commit/action@v3.0.0
 
