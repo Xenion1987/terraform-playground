@@ -6,9 +6,10 @@ resource "docker_container" "netdata" {
     ]
   }
   env = [
-    "NETDATA_CLAIM_TOKEN=${try(var.netdata_claim_token, "")}",
-    "NETDATA_CLAIM_URL=${try(var.netdata_claim_url, "")}",
-    "NETDATA_CLAIM_ROOMS=${try(var.netdata_claim_rooms, "")}"
+    # Explaination: https://developer.hashicorp.com/terraform/language/expressions/conditionals
+    var.netdata_claim_token != null ? "NETDATA_CLAIM_TOKEN=${tostring(var.netdata_claim_token)}" : "NETDATA_CLAIM_TOKEN=''",
+    var.netdata_claim_url != null ? "NETDATA_CLAIM_URL=${tostring(var.netdata_claim_url)}" : "NETDATA_CLAIM_URL=''",
+    var.netdata_claim_rooms != null ? "NETDATA_CLAIM_ROOMS=${tostring(var.netdata_claim_rooms)}" : "NETDATA_CLAIM_ROOMS=''"
   ]
   hostname = var.container_netdata_hostname
   image    = docker_image.netdata.image_id
