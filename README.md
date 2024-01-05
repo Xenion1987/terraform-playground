@@ -257,7 +257,7 @@ Or create a file `terraform.tfvars` and add the variables and your values to tha
 
 | Name | Version |
 |------|---------|
-| <a name="provider_docker"></a> [docker](#provider\_docker) | ~> 3.0.0 |
+| <a name="provider_docker"></a> [docker](#provider\_docker) | 3.0.2 |
 
 ## Resources
 
