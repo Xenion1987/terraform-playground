@@ -257,7 +257,7 @@ Or create a file `terraform.tfvars` and add the variables and your values to tha
 
 | Name | Version |
 |------|---------|
-| <a name="provider_docker"></a> [docker](#provider\_docker) | ~> 3.0.0 |
+| <a name="provider_docker"></a> [docker](#provider\_docker) | 3.0.2 |
 
 ## Resources
 
@@ -275,8 +275,8 @@ Or create a file `terraform.tfvars` and add the variables and your values to tha
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_container_netdata_hostname"></a> [container\_netdata\_hostname](#input\_container\_netdata\_hostname) | Hostname to be shown on Netdata Metrics site | `string` | `"created-by-terraform"` | no |
-| <a name="input_netdata_claim_rooms"></a> [netdata\_claim\_rooms](#input\_netdata\_claim\_rooms) | Room-ID to claim the host to | `string` | `""` | no |
-| <a name="input_netdata_claim_token"></a> [netdata\_claim\_token](#input\_netdata\_claim\_token) | Netdata claim token | `string` | `""` | no |
+| <a name="input_netdata_claim_rooms"></a> [netdata\_claim\_rooms](#input\_netdata\_claim\_rooms) | Room-ID to claim the host to | `string` | `null` | no |
+| <a name="input_netdata_claim_token"></a> [netdata\_claim\_token](#input\_netdata\_claim\_token) | Netdata claim token | `string` | `null` | no |
 | <a name="input_netdata_claim_url"></a> [netdata\_claim\_url](#input\_netdata\_claim\_url) | Netdata URL to claim the host to | `string` | `"https://app.netdata.cloud"` | no |
 | <a name="input_volume_docker_socket_container"></a> [volume\_docker\_socket\_container](#input\_volume\_docker\_socket\_container) | Container Docker socket path | `string` | `"/var/run/docker.sock"` | no |
 | <a name="input_volume_docker_socket_local"></a> [volume\_docker\_socket\_local](#input\_volume\_docker\_socket\_local) | Host Docker socket path | `string` | `"/var/run/docker.sock"` | no |
@@ -289,6 +289,7 @@ Or create a file `terraform.tfvars` and add the variables and your values to tha
 | Name | Description |
 |------|-------------|
 | <a name="output_network_id_netdata"></a> [network\_id\_netdata](#output\_network\_id\_netdata) | Long ID for created docker network 'netdata' |
+| <a name="output_variable_netdata_claim_token"></a> [variable\_netdata\_claim\_token](#output\_variable\_netdata\_claim\_token) | Variable value for 'netdata\_claim\_token' |
 | <a name="output_volume_netdatacache_id"></a> [volume\_netdatacache\_id](#output\_volume\_netdatacache\_id) | ID for created docker volume 'netdatacache' |
 | <a name="output_volume_netdataconfig_id"></a> [volume\_netdataconfig\_id](#output\_volume\_netdataconfig\_id) | ID for created docker volume 'netdataconfig' |
 | <a name="output_volume_netdatalib_id"></a> [volume\_netdatalib\_id](#output\_volume\_netdatalib\_id) | ID for created docker volume 'netdatalib' |

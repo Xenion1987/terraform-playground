@@ -1,4 +1,8 @@
 # This file contains all outputs
+output "variable_netdata_claim_token" {
+  description = "Variable value for 'netdata_claim_token'"
+  value       = var.netdata_claim_token
+}
 output "volume_netdatacache_id" {
   description = "ID for created docker volume 'netdatacache'"
   value       = docker_volume.netdatacache.id

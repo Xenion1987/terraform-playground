@@ -8,8 +8,8 @@ variable "container_netdata_hostname" {
 variable "netdata_claim_token" {
   description = "Netdata claim token"
   type        = string
-  default     = ""
-  sensitive   = true
+  default     = null
+  # sensitive   = true
 }
 variable "netdata_claim_url" {
   description = "Netdata URL to claim the host to"
@@ -19,7 +19,7 @@ variable "netdata_claim_url" {
 variable "netdata_claim_rooms" {
   description = "Room-ID to claim the host to"
   type        = string
-  default     = ""
+  default     = null
 }
 ##############################
 ### Docker volume variables
