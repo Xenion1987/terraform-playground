@@ -23,8 +23,9 @@ This repository can be used as a template for developing with `terraform`. This 
 
 - terraform
 - terraform-docs
-- terraform-lint
-- terraform-trivy
+- terragrunt
+- tflint
+- trivy
 - vscode terraform plugins
 - pre-commit
 
