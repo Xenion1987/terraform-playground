@@ -27,6 +27,8 @@ scan:
   skip-dirs:
     # Default is empty
     - .devcontainer
+    - .terraform
+    - .terragrunt-cache
 
 misconfiguration:
   scanners:
