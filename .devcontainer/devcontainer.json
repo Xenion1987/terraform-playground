@@ -1,78 +1,98 @@
 {
-    "name": "terraform-playground",
-    "build": {
-        "dockerfile": "./Dockerfile",
-        "args": {
-            "-t": "local/terraform-playground"
-        },
-        "context": "."
-    },
-    "runArgs": [
-        "--name=terraform-playground",
-        "--hostname=terraform"
-    ],
-    "initializeCommand": "bash ./.devcontainer/scripts/initialize-command.sh",
-    "onCreateCommand": "bash ./.devcontainer/scripts/on-create-command.sh",
-    "postCreateCommand": "bash ./.devcontainer/scripts/post-create-command.sh",
-    "remoteUser": "vscode",
-    // "remoteEnv": {
-    //     "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+  "name": "terraform",
+  // "image": "git.dogado.net:5000/mcs/eaa/docker-image-terraform:latest",
+  "build": {
+    // "args": {
+    //   "LINUX_USER": "",
+    //   "TERRAFORM_VERSION": "",
+    //   "TERRAFORMER_VERSION": "",
+    //   "TFDOCS_VERSION": "",
+    //   "TFLINT_VERSION": "",
+    //   "TFTRIVY_VERSION": "",
+    //   "TERRAGRUNT_VERSION": ""
     // },
-    "features": {
-        // https://github.com/devcontainers/features/tree/main/src/common-utils
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            // "upgradePackages": "true",
-            "installZsh": "false",
-            "configureZshAsDefaultShell": "false",
-            // "userUid": "1000",
-            // "userGid": "1000",
-            "username": "vscode"
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+    "--hostname=terraform"
+  ],
+  "initializeCommand": "bash ./.devcontainer/scripts/initialize-command.sh",
+  "onCreateCommand": "bash ./.devcontainer/scripts/on-create-command.sh",
+  "postCreateCommand": "bash ./.devcontainer/scripts/post-create-command.sh",
+  "containerEnv": {
+    "TZ": "Europe/Berlin"
+  },
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin:/workspaces/terraform-playground/.devcontainer/scripts"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "false",
+      "configureZshAsDefaultShell": "false",
+      "username": "vscode",
+      // "userUid": "1000",
+      // "userGid": "1000",
+      "upgradePackages": "false"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "telemetry.telemetryLevel": "off",
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.autoSave": "off",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "git.autorefresh": true,
+        "git.autofetch": true,
+        "git.autofetchPeriod": 90,
+        "git.pullTags": false,
+        "git.confirmSync": false,
+        "terminal.integrated.scrollback": 10000,
+        "[markdown]": {
+          "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+          "editor.tabSize": 3
         },
-        // https://github.com/devcontainers/features/tree/main/src/docker-outside-of-docker
-        "ghcr.io/devcontainers/features/docker-outside-of-docker": {
-            // "dockerDashComposeVersion": "v2",
-            "installDockerBuildx": false
+        "[terraform]": {
+          "editor.defaultFormatter": "hashicorp.terraform"
+        },
+        "[terraform-vars]": {
+          "editor.defaultFormatter": "hashicorp.terraform"
         }
+      },
+      "extensions": [
+        "sleistner.vscode-fileutils",
+        "yzhang.markdown-all-in-one",
+        "HashiCorp.terraform",
+        "hashicorp.hcl",
+        "mhutchie.git-graph"
+      ]
+    }
+  },
+  "mounts": [
+    // OPTIONAL: Mount your local docker socket into the devcontainer for using proivider 'docker'
+    // {
+    //     "source": "/var/run/docker.sock",
+    //     "target": "/var/run/docker.sock",
+    //     "type": "bind"
+    // },
+    // OPTIONAL: Mount your local workspace directory into the devcontainer
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.aws",
+      "target": "/home/vscode/.aws",
+      "type": "bind"
     },
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "telemetry.telemetryLevel": "off",
-                "files.eol": "\n",
-                "files.insertFinalNewline": true,
-                "files.autoSave": "off",
-                "editor.formatOnSave": true,
-                "git.autorefresh": true,
-                "git.autofetch": true,
-                "git.autofetchPeriod": 90,
-                "git.pullTags": false,
-                "git.confirmSync": false
-            },
-            "extensions": [
-                "sleistner.vscode-fileutils",
-                "esbenp.prettier-vscode",
-                "yzhang.markdown-all-in-one",
-                "HashiCorp.terraform"
-            ]
-        }
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.config/openstack",
+      "target": "/home/vscode/.config/openstack",
+      "type": "bind"
     },
-    "mounts": [
-        // OPTIONAL: Mount your local docker socket into the devcontainer for using proivider 'docker'
-        // {
-        //     "source": "/var/run/docker.sock",
-        //     "target": "/var/run/docker.sock",
-        //     "type": "bind"
-        // },
-        // OPTIONAL: Mount your local workspace directory into the devcontainer
-        // {
-        // 	"source": "${localEnv:HOME}${localEnv:USERPROFILE}/workspace",
-        // 	"target": "/home/vscode/workspace",
-        // 	"type": "bind"
-        // },
-        {
-            "source": "devcontainer-history",
-            "target": "/home/vscode/.history_export",
-            "type": "volume"
-        }
-    ]
+    {
+      "source": "devcontainer-history",
+      "target": "/home/vscode/.history_export",
+      "type": "volume"
+    }
+  ]
 }
