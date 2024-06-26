@@ -35,7 +35,7 @@ pre-commit install
 
 # Add functions to source aws and openstack credentials
 if [[ ! $(grep -qo source-aws-credentials ~/".${SHELL##*/}rc") == "source-aws-credentials" ]]; then
-  cat << _EOF >> ~/".${SHELL##*/}rc"
+  cat <<_EOF >>~/".${SHELL##*/}rc"
 
 function source-aws-credentials() {
   export AWS_DEFAULT_REGION=\$(awk -F' = ' '/region/ {print \$NF}' ~/.aws/config)
@@ -47,7 +47,7 @@ function source-aws-credentials() {
 _EOF
 fi
 if [[ ! $(grep -qo source-openstack-credentials ~/".${SHELL##*/}rc") == "source-openstack-credentials" ]]; then
-  cat << _EOF >> ~/".${SHELL##*/}rc"
+  cat <<_EOF >>~/".${SHELL##*/}rc"
 
 function source-openstack-credentials() {
   . ~/.config/openstack/groupone-mcs-openstack.sh \\
@@ -56,7 +56,7 @@ function source-openstack-credentials() {
 _EOF
 fi
 if ! grep -qo 'function sc' ~/".${SHELL##*/}rc"; then
-  cat << _EOF >> ~/".${SHELL##*/}rc"
+  cat <<_EOF >>~/".${SHELL##*/}rc"
 
 # Source AWS and OS credentials and print them safely
 function sc() {
@@ -75,7 +75,7 @@ function sc() {
 _EOF
 fi
 if ! grep -qo 'function cc' ~/".${SHELL##*/}rc"; then
-  cat << _EOF >> ~/".${SHELL##*/}rc"
+  cat <<_EOF >>~/".${SHELL##*/}rc"
 
 # Check environment for AWS and OS credentials and print them safely
 function cc() {
@@ -89,7 +89,7 @@ function cc() {
 _EOF
 fi
 if ! grep -qo 'eval sc' ~/".${SHELL##*/}rc"; then
-  cat << _EOF >> ~/".${SHELL##*/}rc"
+  cat <<_EOF >>~/".${SHELL##*/}rc"
 
 eval sc
 _EOF
@@ -97,7 +97,7 @@ fi
 
 if command -v openstack &>/dev/null; then
   if ! grep -qo 'openstack complete' ~/".${SHELL##*/}rc"; then
-    cat << _EOF >> ~/".${SHELL##*/}rc"
+    cat <<_EOF >>~/".${SHELL##*/}rc"
 
 source <(openstack complete)
 _EOF
