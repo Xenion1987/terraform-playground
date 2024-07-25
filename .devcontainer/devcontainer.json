@@ -78,17 +78,19 @@
     //     "target": "/var/run/docker.sock",
     //     "type": "bind"
     // },
-    // OPTIONAL: Mount your local workspace directory into the devcontainer
+    // OPTIONAL: Mount your local awscli directory into the devcontainer
     {
       "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.aws",
       "target": "/home/vscode/.aws",
       "type": "bind"
     },
+    // OPTIONAL: Mount your local openstackclient directory into the devcontainer
     {
       "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.config/openstack",
       "target": "/home/vscode/.config/openstack",
       "type": "bind"
     },
+    // RECOMMENDED: Store the history inside a docker volume to share it between devcontainers
     {
       "source": "devcontainer-history",
       "target": "/home/vscode/.history_export",
